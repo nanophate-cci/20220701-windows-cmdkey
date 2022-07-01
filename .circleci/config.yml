@@ -1,4 +1,8 @@
 version: 2.1
+
+orbs:
+  win-perf-diag: circle-makotom-orbs/windows-performance-diagnosis@0.0.1
+
 jobs:
   build-keytar:
     parameters:
@@ -10,13 +14,21 @@ jobs:
     resource_class: windows.medium
     steps:
       - checkout
+      - win-perf-diag/start-perflog
+      - win-perf-diag/record-wpr-in-background:
+          for-sec: 100
+          cue-sec: 0
+          split-by-sec: 60
       - run: |
+          sleep 12
           mkdir test-project
           cd test-project
           npm install keytar@<< parameters.version >>
           node -e "require('keytar').setPassword('test-service', process.env['USERNAME'], '2]Fq-k),EU')"
       - run: cmdkey /generic:LegacyGeneric:target="test-service" /user:$env:USERNAME /pass:"2]Fq-k),EU"
-
+      - win-perf-diag/ensure-and-save-wpr
+      - win-perf-diag/stop-and-save-perflog
+      
 workflows:
   workflow1:
     jobs:
