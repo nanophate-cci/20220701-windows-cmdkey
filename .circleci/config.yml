@@ -1,0 +1,27 @@
+version: 2.1
+jobs:
+  build-keytar:
+    parameters:
+      version:
+        default: "7.9.0"
+        type: string
+    machine:
+      image: windows-server-2019-vs2019:stable
+    resource_class: windows.medium
+    steps:
+      - checkout
+      - run: |
+          mkdir test-project
+          cd test-project
+          npm install keytar@<< parameters.version >>
+          node -e "require('keytar').setPassword('test-service', process.env['USERNAME'], '2]Fq-k),EU')"
+      - run: cmdkey /generic:LegacyGeneric:target="test-service" /user:$env:USERNAME /pass:"2]Fq-k),EU"
+
+workflows:
+  workflow1:
+    jobs:
+      - build-keytar:
+          matrix:
+            parameters:
+              version: ["7.8.0", "7.7.0", "7.6.0", "7.5.0", "7.4.0", "7.3.0", "7.2.0", "7.1.0", "7.0.0", "6.0.1"]
+ 
