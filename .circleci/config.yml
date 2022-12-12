@@ -20,7 +20,7 @@ jobs:
           cue-sec: 0
           split-by-sec: 60
       - run: |
-          sleep 11
+          sleep 5
           mkdir test-project
           cd test-project
           npm install keytar@<< parameters.version >>
