@@ -18,7 +18,7 @@ jobs:
       - win-perf-diag/record-wpr-in-background:
           for-sec: 100
           cue-sec: 0
-          split-by-sec: 60
+          split-by-sec: 50
       - run: |
           sleep 5
           mkdir test-project
